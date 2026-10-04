@@ -1,18 +1,21 @@
-from fitness_app.file_handling import load_participants
+from fitness_app.file_handling import load_participants, load_sessions ##
 
 ##
 def main():
     participants = load_participants("data/participants.csv")
 
-    for participant_id in participants:
-        participant = participants[participant_id]
+    sessions = load_sessions(
+        "data/fitness_sessions.csv",
+        participants
+    )
+
+    for session_id in sessions:
+        session = sessions[session_id]
 
         print(
-            participant.participant_id,
-            participant.name,
-            participant.baseline_heart_rate,
-            participant.baseline_skin_response,
-            participant.baseline_temperature
+            session.session_id,
+            session.participant.name,
+            len(session.observations)
         )
 
 if __name__ == "__main__":
