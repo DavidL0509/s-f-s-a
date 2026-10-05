@@ -10,11 +10,6 @@ The program loads participant profiles and fitness-session measurements, validat
 
 The program also reads the intentionally invalid session file. Invalid rows are rejected without stopping the whole program, and the source file, row number, field and rejection reason are recorded.
 
-## How to run:
-
-Run the program from the repository root:
-`python main.py`
-
 ## Project Structure
 
 - `main.py` - starts the program, loads the official input files, analyzes the sessions, combines rejected records, creates the output files and prints the completion summary.
@@ -232,8 +227,6 @@ The program uses only the Python standard library. No external packages are requ
 
 Python 3 is required.
 
-The `requirements.txt` file is empty because there are no third-party dependencies.
-
 ## Running the Program
 
 Open a terminal in the repository root and run:
@@ -244,7 +237,7 @@ If the operating system uses `python3`, run:
 
 `python3 main.py`
 
-The program expects the official CSV files to remain inside the `data` directory with their original names.
+The program expects the CSV files to remain inside the `data` directory with their original names.
 
 ## Example Output
 
