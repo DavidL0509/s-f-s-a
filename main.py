@@ -1,6 +1,12 @@
 from pathlib import Path
 
-from fitness_app.file_handling import load_participants, load_sessions
+from fitness_app.file_handling import (
+    load_participants,
+    load_sessions,
+    write_output
+)
+
+from fitness_app.analysis import analyze_session
 
 
 def main():
@@ -20,19 +26,36 @@ def main():
         participants
     )
 
-    print("Participants:", len(participants))
-    print("Valid sessions:", len(valid_sessions))
-    print("Rejected from valid file:", len(rejected_valid))
+    sessions = {}
+    sessions.update(valid_sessions)
+    sessions.update(invalid_sessions)
 
-    print()
-    print("Invalid-file sessions:", len(invalid_sessions))
-    print("Rejected from invalid file:", len(rejected_invalid))
+    results = []
 
-    print()
-    print("Rejected records:")
+    for session_id in sessions:
+        result = analyze_session(sessions[session_id])
+        results.append(result)
 
-    for record in rejected_invalid:
-        print(record)
+    rejected_records = (
+        rejected_participants
+        + rejected_valid
+        + rejected_invalid
+    )
+
+    accepted_observations = 0
+
+    for result in results:
+        accepted_observations += result["usable_observations"]
+
+    write_output(results, rejected_records)
+
+    print("Processed sessions:", len(results))
+    print("Accepted observations:", accepted_observations)
+    print("Rejected records:", len(rejected_records))
+    print("Created files:")
+    print("output/analysis_summary.csv")
+    print("output/analysis_report.txt")
+    print("output/rejected_records.txt")
 
 
 if __name__ == "__main__":

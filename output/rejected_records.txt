@@ -1,0 +1,15 @@
+data\fitness_sessions.csv ; row 26 ; signal_quality ; poor signal
+data\fitness_sessions.csv ; row 27 ; signal_quality ; poor signal
+data\fitness_sessions.csv ; row 28 ; signal_quality ; poor signal
+data\fitness_sessions.csv ; row 29 ; signal_quality ; poor signal
+data\fitness_sessions.csv ; row 30 ; signal_quality ; poor signal
+data\fitness_sessions_invalid.csv ; row 3 ; heart_rate ; invalid type
+data\fitness_sessions_invalid.csv ; row 4 ; participant_id ; invalid ID
+data\fitness_sessions_invalid.csv ; row 5 ; activity_level ; missing value
+data\fitness_sessions_invalid.csv ; row 6 ; signal_quality ; out of range
+data\fitness_sessions_invalid.csv ; row 7 ; session_id ; invalid ID
+data\fitness_sessions_invalid.csv ; row 8 ; participant_id ; unknown participant
+data\fitness_sessions_invalid.csv ; row 9 ; timestamp ; invalid type
+data\fitness_sessions_invalid.csv ; row 10 ; heart_rate ; out of range
+data\fitness_sessions_invalid.csv ; row 11 ; skin_response ; out of range
+data\fitness_sessions_invalid.csv ; row 12 ; signal_quality ; missing value

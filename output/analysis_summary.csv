@@ -1,0 +1,8 @@
+session_id,participant_id,usable_observations,classification,reason
+FIT-2026-001,P001,6,resting,Average activity level is <= 0.33.
+FIT-2026-002,P002,6,moderate activity,Average activity level is over 0.33 and <= 0.66.
+FIT-2026-003,P003,6,high activity,Average activity level is > 0.66.
+FIT-2026-004,P001,6,recovering,Heart rate and activity both declined by at least 30 percent from their session peaks.
+FIT-2026-005,P002,0,insufficient data,Fewer than 6 usable observations.
+FIT-2026-101,P001,1,insufficient data,Fewer than 6 usable observations.
+FIT-2026-102,P002,0,insufficient data,Fewer than 6 usable observations.

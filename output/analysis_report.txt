@@ -1,0 +1,69 @@
+Session: FIT-2026-001
+Participant: P001 - Amina Noor
+Usable observations: 6
+Rejected observations: 0
+Classification: resting
+Reason: Average activity level is <= 0.33.
+Heart rate average/min/max: 68.83 / 68 / 70
+Skin response average/min/max: 1.19 / 1.17 / 1.22
+Temperature average/min/max: 32.43 / 32.4 / 32.5
+Activity average/min/max: 0.09 / 0.07 / 0.12
+Differences from baseline (heart/skin/temp): 0.83 / -0.01 / 0.03
+
+Session: FIT-2026-002
+Participant: P002 - Jonas Berg
+Usable observations: 6
+Rejected observations: 0
+Classification: moderate activity
+Reason: Average activity level is over 0.33 and <= 0.66.
+Heart rate average/min/max: 102.0 / 78 / 118
+Skin response average/min/max: 2.01 / 1.55 / 2.4
+Temperature average/min/max: 33.13 / 32.8 / 33.4
+Activity average/min/max: 0.5 / 0.22 / 0.68
+Differences from baseline (heart/skin/temp): 28.0 / 0.56 / 0.43
+
+Session: FIT-2026-003
+Participant: P003 - Maya Chen
+Usable observations: 6
+Rejected observations: 0
+Classification: high activity
+Reason: Average activity level is > 0.66.
+Heart rate average/min/max: 132.5 / 72 / 162
+Skin response average/min/max: 3.24 / 1.3 / 4.2
+Temperature average/min/max: 33.53 / 32.5 / 34.1
+Activity average/min/max: 0.75 / 0.25 / 0.94
+Differences from baseline (heart/skin/temp): 69.5 / 2.14 / 1.23
+
+Session: FIT-2026-004
+Participant: P001 - Amina Noor
+Usable observations: 6
+Rejected observations: 0
+Classification: recovering
+Reason: Heart rate and activity both declined by at least 30 percent from their session peaks.
+Heart rate average/min/max: 113.17 / 72 / 151
+Skin response average/min/max: 2.58 / 1.35 / 3.9
+Temperature average/min/max: 33.28 / 32.6 / 33.9
+Activity average/min/max: 0.55 / 0.18 / 0.92
+Differences from baseline (heart/skin/temp): 45.17 / 1.38 / 0.88
+
+Session: FIT-2026-005
+Participant: P002 - Jonas Berg
+Usable observations: 0
+Rejected observations: 5
+Classification: insufficient data
+Reason: Fewer than 6 usable observations.
+
+Session: FIT-2026-101
+Participant: P001 - Amina Noor
+Usable observations: 1
+Rejected observations: 4
+Classification: insufficient data
+Reason: Fewer than 6 usable observations.
+
+Session: FIT-2026-102
+Participant: P002 - Jonas Berg
+Usable observations: 0
+Rejected observations: 4
+Classification: insufficient data
+Reason: Fewer than 6 usable observations.
+

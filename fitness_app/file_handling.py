@@ -1,6 +1,8 @@
 import csv
 import re
 
+from pathlib import Path
+
 from fitness_app.models import Participant, Observation, FitnessSession
 
 ##
@@ -19,13 +21,15 @@ def add_rejected_record(
     file_path,
     row_number,
     field,
-    reason
+    reason,
+    session_id=None
 ):
     rejected_records.append({
         "file": str(file_path),
         "row": row_number,
         "field": field,
-        "reason": reason
+        "reason": reason,
+        "session_id": session_id
     })
 
 ##
@@ -37,7 +41,6 @@ def validate_participant_id(participant_id):
 def validate_session_id(session_id):
     if not re.fullmatch(r"FIT-\d{4}-\d{3}", session_id):
         raise InvalidIdentifierError("invalid ID")
-
 
 ##
 def validate_observation(observation):
@@ -63,7 +66,6 @@ def validate_observation(observation):
         return "signal_quality", "poor signal"
 
     return None, None
-
 
 ##
 def load_participants(file_path):
@@ -180,7 +182,6 @@ def load_participants(file_path):
 
     return participants, rejected_records
 
-
 ##
 def load_sessions(file_path, participants):
     sessions = {}
@@ -191,6 +192,8 @@ def load_sessions(file_path, participants):
             reader = csv.DictReader(file)
 
             for row_number, row in enumerate(reader, start=2):
+
+                rejected_session_id = row.get("session_id")
 
                 ## Check missing values
                 try:
@@ -205,11 +208,12 @@ def load_sessions(file_path, participants):
                         file_path,
                         row_number,
                         column_name,
-                        str(error)
+                        str(error),
+                        rejected_session_id
                     )
                     continue
 
-                ## Read IDs
+                ## Read ID
                 try:
                     current_field = "session_id"
                     session_id = row[current_field]
@@ -223,11 +227,12 @@ def load_sessions(file_path, participants):
                         file_path,
                         row_number,
                         current_field,
-                        "missing field"
+                        "missing field",
+                        rejected_session_id
                     )
                     continue
 
-                ## Validate IDs
+                ## Validate ID
                 try:
                     current_field = "session_id"
                     validate_session_id(session_id)
@@ -241,7 +246,8 @@ def load_sessions(file_path, participants):
                         file_path,
                         row_number,
                         current_field,
-                        "invalid ID"
+                        "invalid ID",
+                        rejected_session_id
                     )
                     continue
 
@@ -255,7 +261,8 @@ def load_sessions(file_path, participants):
                         file_path,
                         row_number,
                         "participant_id",
-                        "unknown participant"
+                        "unknown participant",
+                        rejected_session_id
                     )
                     continue
 
@@ -266,7 +273,7 @@ def load_sessions(file_path, participants):
                         participant
                     )
 
-                # Convert measurements
+                ## Convert measurements
                 try:
                     current_field = "timestamp"
                     timestamp = int(row[current_field])
@@ -292,7 +299,8 @@ def load_sessions(file_path, participants):
                         file_path,
                         row_number,
                         current_field,
-                        "missing field"
+                        "missing field",
+                        rejected_session_id
                     )
                     continue
 
@@ -302,7 +310,8 @@ def load_sessions(file_path, participants):
                         file_path,
                         row_number,
                         current_field,
-                        "invalid type"
+                        "invalid type",
+                        rejected_session_id
                     )
                     continue
 
@@ -324,7 +333,8 @@ def load_sessions(file_path, participants):
                         file_path,
                         row_number,
                         current_field,
-                        reason
+                        reason,
+                        rejected_session_id
                     )
                     continue
 
@@ -340,3 +350,175 @@ def load_sessions(file_path, participants):
         print("CSV error:", file_path)
 
     return sessions, rejected_records
+
+##
+def write_output(results, rejected_records):
+    output_dir = Path("output")
+    output_dir.mkdir(exist_ok=True)
+
+    ## Analysis summary CSV
+    with open(
+        output_dir / "analysis_summary.csv",
+        "w",
+        encoding="utf-8",
+        newline=""
+    ) as file:
+        writer = csv.writer(file)
+
+        writer.writerow([
+            "session_id",
+            "participant_id",
+            "usable_observations",
+            "classification",
+            "reason"
+        ])
+
+        for result in results:
+            writer.writerow([
+                result["session_id"],
+                result["participant_id"],
+                result["usable_observations"],
+                result["classification"],
+                result["reason"]
+            ])
+
+    ## Analysis report
+    with open(
+        output_dir / "analysis_report.txt",
+        "w",
+        encoding="utf-8"
+    ) as file:
+
+        for result in results:
+            rejected_count = 0
+
+            for record in rejected_records:
+                if record["session_id"] == result["session_id"]:
+                    rejected_count += 1
+
+            file.write(
+                "Session: "
+                + result["session_id"]
+                + "\n"
+            )
+
+            file.write(
+                "Participant: "
+                + result["participant_id"]
+                + " - "
+                + result["participant_name"]
+                + "\n"
+            )
+
+            file.write(
+                "Usable observations: "
+                + str(result["usable_observations"])
+                + "\n"
+            )
+
+            file.write(
+                "Rejected observations: "
+                + str(rejected_count)
+                + "\n"
+            )
+
+            file.write(
+                "Classification: "
+                + result["classification"]
+                + "\n"
+            )
+
+            file.write(
+                "Reason: "
+                + result["reason"]
+                + "\n"
+            )
+
+            if result["summaries"] is not None:
+                summaries = result["summaries"]
+                comparison = result["baseline_comparison"]
+
+                file.write(
+                    "Heart rate average/min/max: "
+                    + str(round(
+                        summaries["heart_rate"]["average"], 2
+                    ))
+                    + " / "
+                    + str(summaries["heart_rate"]["minimum"])
+                    + " / "
+                    + str(summaries["heart_rate"]["maximum"])
+                    + "\n"
+                )
+
+                file.write(
+                    "Skin response average/min/max: "
+                    + str(round(
+                        summaries["skin_response"]["average"], 2
+                    ))
+                    + " / "
+                    + str(summaries["skin_response"]["minimum"])
+                    + " / "
+                    + str(summaries["skin_response"]["maximum"])
+                    + "\n"
+                )
+
+                file.write(
+                    "Temperature average/min/max: "
+                    + str(round(
+                        summaries["temperature"]["average"], 2
+                    ))
+                    + " / "
+                    + str(summaries["temperature"]["minimum"])
+                    + " / "
+                    + str(summaries["temperature"]["maximum"])
+                    + "\n"
+                )
+
+                file.write(
+                    "Activity average/min/max: "
+                    + str(round(
+                        summaries["activity_level"]["average"], 2
+                    ))
+                    + " / "
+                    + str(summaries["activity_level"]["minimum"])
+                    + " / "
+                    + str(summaries["activity_level"]["maximum"])
+                    + "\n"
+                )
+
+                file.write(
+                    "Differences from baseline (heart/skin/temp): "
+                    + str(round(
+                        comparison["heart_rate"], 2
+                    ))
+                    + " / "
+                    + str(round(
+                        comparison["skin_response"], 2
+                    ))
+                    + " / "
+                    + str(round(
+                        comparison["temperature"], 2
+                    ))
+                    + "\n"
+                )
+
+            file.write("\n")
+
+    ## Rejected records
+    with open(
+        output_dir / "rejected_records.txt",
+        "w",
+        encoding="utf-8"
+    ) as file:
+
+        for record in rejected_records:
+            file.write(
+                record["file"]
+                + " ; row "
+                + str(record["row"])
+                + " ; "
+                + str(record["field"])
+                + " ; "
+                + record["reason"]
+                + "\n"
+            )
